@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% block title %}{% end block %} - Todo list</title>
+    <title>{% block title %}{% endblock %} - Todo list</title>
     <link href="{{ url_for('static',filename='style.css')}}" rel="stylesheet" />
   </head>
   <body>
@@ -20,10 +20,10 @@
       </ul>
     </nav>
     <section class="content">
-      <header>{ % block header % } { % endblock % }</header>
-      { % for message in get_flashed_messages() % }
+      <header>{% block header %}{% endblock %}</header>
+      {% for message in get_flashed_messages() %}
       <div class="flash">{{ message }}</div>
-      { % endfor % } { % block content % } { % endblock % }
+      {% endfor %} {% block content %}{% endblock %}
     </section>
   </body>
 </html>
