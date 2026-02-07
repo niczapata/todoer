@@ -1,9 +1,7 @@
-import functools
-import re
 from flask import (
     Blueprint,
     flash,
-    # g,
+    g,
     render_template,
     request,
     redirect,
@@ -23,7 +21,7 @@ def register():
         password = request.form["password"]
         db, c = get_db()
         error = None
-        c.execute("SELECT id FROM user WHERE username = %s")
+        c.execute("SELECT id FROM user WHERE username = %s", (username,))
         if not username:
             error = "Username is required."
         if not password:
@@ -38,9 +36,7 @@ def register():
             )
             db.commit()
             return redirect(url_for("auth.login"))
-
         flash(error)
-
     return render_template("auth/register.html")
 
 
@@ -66,3 +62,24 @@ def login():
 
         flash(error)
     return render_template("auth/login.html")
+
+
+@bp.before_app_request
+def load_logged_in_user():
+    user_id = session.get("user_id")
+    if user_id is None:
+        g.user = None
+    else:
+        db, c = get_db()
+        c.execute("select * from user where id = %s", (user_id,))
+        g.user = c.fetchone()
+
+
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for("auth.login"))
+        return view(**kwargs)
+
+    return wrapped_view

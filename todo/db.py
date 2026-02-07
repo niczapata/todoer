@@ -6,6 +6,7 @@ within a Flask application context, including connection retrieval,
 initialization, and cleanup.
 """
 import psycopg2
+from psycopg2.extras import RealDictCursor
 import click
 from flask import current_app, g
 from flask.cli import with_appcontext
@@ -30,7 +31,7 @@ def get_db():
             password=current_app.config["DATABASE_PASSWORD"],
             dbname=current_app.config["DATABASE"],
         )
-        g.c = g.db.cursor()
+        g.c = g.db.cursor(cursor_factory=RealDictCursor)
     return g.db, g.c
 
 
