@@ -1,0 +1,9 @@
+{% extends "base.html" %} {% block header %}
+<h1>{% block title %}New Todo{% endblock %}</h1>
+{% endblock %} {% block content %}
+<form method="post">
+  <label for="description">Description</label>
+  <input type="description" name="description" required />
+  <button type="submit">Create</button>
+</form>
+{% endblock %}
